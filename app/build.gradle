@@ -11,7 +11,7 @@ plugins {
     id("com.google.cloud.tools.jib") version "3.4.0"
 }
 
-group = "org.jothika"
+group = "org.jothika.costoperator"
 version = "0.1.0-SNAPSHOT"
 
 ext {
@@ -40,7 +40,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
 
     // JUnit
-        // Use JUnit Jupiter for testing.
+    // Use JUnit Jupiter for testing.
     testImplementation libs.junit.jupiter
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -59,9 +59,21 @@ java {
 }
 
 application {
-    mainClass.set("org.jothika.Runner")
+    mainClass.set("org.jothika.costoperator.Runner")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// Copy the generated crds from build folder to app crds folder
+// This task can be executed from command line as follows "gradle copyCrds"
+tasks.register('copyCrds', Copy) {
+    from layout.getBuildDirectory().dir("classes/java/main/META-INF/fabric8")
+    into layout.getProjectDirectory().dir("crds")
+}
+
+// Run the copycrds task after the build is completed
+tasks.named("build") {
+    finalizedBy("copyCrds")
 }
