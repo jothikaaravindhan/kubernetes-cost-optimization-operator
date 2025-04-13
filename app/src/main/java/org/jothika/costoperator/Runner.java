@@ -1,9 +1,8 @@
-package org.jothika;
+package org.jothika.costoperator;
 
 import io.javaoperatorsdk.operator.Operator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class Runner {
 
@@ -11,7 +10,7 @@ public class Runner {
 
     public static void main(String[] args) {
         Operator operator = new Operator();
-        //This is where the reconcilers needs to be registered
+        // This is where the reconcilers needs to be registered
         operator.start();
         log.info("Operator started.");
     }
