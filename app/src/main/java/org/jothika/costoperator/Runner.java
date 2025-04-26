@@ -10,7 +10,8 @@ public class Runner {
 
     public static void main(String[] args) {
         Operator operator = new Operator();
-        // This is where the reconcilers needs to be registered
+        log.info("Starting Cost Optimization Operator...");
+        operator.register(new CostOptimizationOperatorReconciler());
         operator.start();
         log.info("Operator started.");
     }
