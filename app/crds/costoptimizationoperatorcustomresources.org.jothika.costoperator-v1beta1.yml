@@ -15,22 +15,25 @@ spec:
   validation:
     openAPIV3Schema:
       properties:
-        name:
-          type: string
-        namespace:
-          type: string
-        notificationEmail:
-          type: string
-        podName:
-          type: string
-        resourceType:
-          type: string
         spec:
+          properties:
+            name:
+              type: string
+            namespace:
+              type: string
+            notificationEmail:
+              type: string
+            podName:
+              type: string
+            resourceType:
+              type: string
+            status:
+              type: string
+            threshold:
+              type: integer
           type: object
         status:
           type: object
-        threshold:
-          type: integer
       type: object
   versions:
   - name: v1
