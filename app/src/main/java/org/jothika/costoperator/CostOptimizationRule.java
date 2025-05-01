@@ -7,7 +7,7 @@ import io.fabric8.kubernetes.model.annotation.Version;
 
 @Group("org.jothika.costoperator")
 @Version("v1")
-public class CostOptimizationOperatorCustomResource
-        extends CustomResource<CostOptimizationOperatorSpec, CostOptimizationOperatorStatus> implements Namespaced {
+public class CostOptimizationRule
+        extends CustomResource<CostOptimizationRuleSpec, CostOptimizationRuleStatus> implements Namespaced {
 
 }
