@@ -11,7 +11,7 @@ public class Runner {
     public static void main(String[] args) {
         Operator operator = new Operator();
         log.info("Starting Cost Optimization Operator...");
-        operator.register(new CostOptimizationOperatorReconciler());
+        operator.register(new CostOptimizationRuleReconciler());
         operator.start();
         log.info("Operator started.");
     }

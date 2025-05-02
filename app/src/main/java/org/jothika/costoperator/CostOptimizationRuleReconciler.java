@@ -11,19 +11,19 @@ import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration;
 import io.javaoperatorsdk.operator.api.reconciler.DeleteControl;
 
 @ControllerConfiguration
-public class CostOptimizationOperatorReconciler implements Reconciler<CostOptimizationOperatorCustomResource> {
-    private static final Logger log = LoggerFactory.getLogger(CostOptimizationOperatorReconciler.class);
+public class CostOptimizationRuleReconciler implements Reconciler<CostOptimizationRule> {
+    private static final Logger log = LoggerFactory.getLogger(CostOptimizationRuleReconciler.class);
 
-    public UpdateControl<CostOptimizationOperatorCustomResource> reconcile(
-            CostOptimizationOperatorCustomResource primary,
-            Context<CostOptimizationOperatorCustomResource> context) {
+    public UpdateControl<CostOptimizationRule> reconcile(
+            CostOptimizationRule primary,
+            Context<CostOptimizationRule> context) {
         log.info("Reconciling CostOptimizationOperatorCustomResource: {}", primary.getMetadata().getName());
         log.info("Namespace: {}", primary.getMetadata().getNamespace());
         return UpdateControl.noUpdate();
     }
 
-    public DeleteControl cleanup(CostOptimizationOperatorCustomResource primary,
-            Context<CostOptimizationOperatorCustomResource> context) {
+    public DeleteControl cleanup(CostOptimizationRule primary,
+                                 Context<CostOptimizationRule> context) {
         log.info("Cleaning up CostOptimizationOperatorCustomResource: {}", primary.getMetadata().getName());
         log.info("Namespace: {}", primary.getMetadata().getNamespace());
         return DeleteControl.defaultDelete();

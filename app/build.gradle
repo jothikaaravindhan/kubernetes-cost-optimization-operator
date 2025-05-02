@@ -29,7 +29,10 @@ repositories {
 
 dependencies {
     // Java Operator SDK
-    implementation("io.javaoperatorsdk:operator-framework:$josdkVersion")
+    implementation("io.javaoperatorsdk:operator-framework:$josdkVersion") {
+        // https://mvnrepository.com/artifact/io.fabric8/kubernetes-httpclient-vertx
+        exclude group: 'io.fabric8', module: 'kubernetes-httpclient-vertx'
+    }
 
     // Operator SDK JUnit 5 support
     testImplementation("io.javaoperatorsdk:operator-framework-junit-5:$josdkVersion")
@@ -48,8 +51,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
     // CRD generation (runtime dependencies)
-    implementation("io.fabric8:crd-generator-apt:$fabric8Version")
-    annotationProcessor("io.fabric8:crd-generator-apt:$fabric8Version")
+    implementation("io.fabric8:crd-generator-api-v2:$fabric8Version")
 }
 
 java {
@@ -64,18 +66,6 @@ application {
 
 tasks.test {
     useJUnitPlatform()
-}
-
-// Copy the generated crds from build folder to app crds folder
-// This task can be executed from command line as follows "gradle copyCrds"
-tasks.register('copyCrds', Copy) {
-    from layout.getBuildDirectory().dir("classes/java/main/META-INF/fabric8")
-    into layout.getProjectDirectory().dir("crds")
-}
-
-// Run the copycrds task after the build is completed
-tasks.named("build") {
-    finalizedBy("copyCrds")
 }
 
 
