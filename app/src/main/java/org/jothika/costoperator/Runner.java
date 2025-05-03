@@ -3,11 +3,10 @@ package org.jothika.costoperator;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.javaoperatorsdk.operator.Operator;
+import java.util.concurrent.TimeUnit;
 import org.jothika.costoperator.metrics.MetricsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 public class Runner {
 

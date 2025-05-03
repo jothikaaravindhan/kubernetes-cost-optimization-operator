@@ -1,5 +1,3 @@
 package org.jothika.costoperator;
 
-public class CostOptimizationRuleStatus {
-
-}
+public class CostOptimizationRuleStatus {}
