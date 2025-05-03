@@ -8,7 +8,9 @@
 plugins {
     id("java")
     id("application")
+    id('jacoco')
     id("com.google.cloud.tools.jib") version "3.4.5"
+    id("com.diffplug.spotless") version "7.0.3"
 }
 
 group = "org.jothika.costoperator"
@@ -72,6 +74,29 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy("jacocoTestReport")
+}
+
+spotless {
+    java {
+        clearSteps()
+        googleJavaFormat().aosp()
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.13"
+    reportsDirectory = layout.buildDirectory.dir("jacoco")
+}
+
+tasks.jacocoTestReport {
+    dependsOn("test")
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+        xml.outputLocation = layout.buildDirectory.file("reports/jacoco.xml")
+    }
 }
 
 
