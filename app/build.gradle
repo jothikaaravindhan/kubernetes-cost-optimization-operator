@@ -21,6 +21,7 @@ ext {
     log4jVersion = "2.20.0"
     junitVersion = "5.9.2"
     fabric8Version = "7.1.0"
+    mockitoVersion = "5.17.0"
 }
 
 repositories {
@@ -29,10 +30,7 @@ repositories {
 
 dependencies {
     // Java Operator SDK
-    implementation("io.javaoperatorsdk:operator-framework:$josdkVersion") {
-        // https://mvnrepository.com/artifact/io.fabric8/kubernetes-httpclient-vertx
-        exclude group: 'io.fabric8', module: 'kubernetes-httpclient-vertx'
-    }
+    implementation("io.javaoperatorsdk:operator-framework:$josdkVersion")
 
     // Operator SDK JUnit 5 support
     testImplementation("io.javaoperatorsdk:operator-framework-junit-5:$josdkVersion")
@@ -49,9 +47,17 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("org.mockito:mockito-junit-jupiter:$mockitoVersion")
+    testImplementation("io.fabric8:kubernetes-server-mock:$fabric8Version")
 
     // CRD generation (runtime dependencies)
     implementation("io.fabric8:crd-generator-api-v2:$fabric8Version")
+}
+
+configurations.configureEach {
+    // https://mvnrepository.com/artifact/io.fabric8/kubernetes-httpclient-vertx
+    exclude group: 'io.fabric8', module: 'kubernetes-httpclient-vertx'
 }
 
 java {
@@ -74,14 +80,14 @@ jib {
     from {
         image = "eclipse-temurin:21-jdk"
         platforms {
-                platform {
-                    architecture = 'amd64'
-                    os = 'linux'
-                }
-                platform {
-                    architecture = 'arm64'
-                    os = 'linux'
-                }
+            platform {
+                architecture = 'amd64'
+                os = 'linux'
+            }
+            platform {
+                architecture = 'arm64'
+                os = 'linux'
+            }
         }
     }
     to {
