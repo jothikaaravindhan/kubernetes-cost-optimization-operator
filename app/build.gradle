@@ -11,6 +11,7 @@ plugins {
     id('jacoco')
     id("com.google.cloud.tools.jib") version "3.4.5"
     id("com.diffplug.spotless") version "7.0.3"
+    id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "org.jothika.costoperator"
@@ -99,7 +100,6 @@ tasks.jacocoTestReport {
     }
 }
 
-
 // Jib configuration
 jib {
     from {
@@ -121,5 +121,15 @@ jib {
     container {
         mainClass = "org.jothika.costoperator.Runner"
         creationTime = "USE_CURRENT_TIMESTAMP"
+    }
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "jothikaaravindhan_kubernetes-cost-optimization-operator"
+        property "sonar.organization", "jothikaaravindhan"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property("sonar.java.source", JavaVersion.VERSION_21.toString())
+        property("sonar.java.target", JavaVersion.VERSION_21.toString())
     }
 }
