@@ -107,11 +107,8 @@ public class TestMockUtils {
     }
 
     public void mockPodAllocatedMetricsToNullK8sApiEndpoints(String namespace, String podName) {
-        PodSpec podSpec = new PodSpecBuilder().build();
-
         Pod pod =
                 new PodBuilder()
-                        .withSpec(podSpec)
                         .withMetadata(
                                 new ObjectMetaBuilder()
                                         .withName(podName)

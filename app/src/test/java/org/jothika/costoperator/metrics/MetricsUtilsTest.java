@@ -81,8 +81,8 @@ public class MetricsUtilsTest {
                 metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
-        assertEquals(cpuUsageMetricsPercentage, 25.0);
-        assertEquals(memoryUsageMetricsPercentage, 50.0);
+        assertEquals(25.0, cpuUsageMetricsPercentage);
+        assertEquals(50.0, memoryUsageMetricsPercentage);
     }
 
     // Test for metrics failure when pod metrics is null
@@ -103,8 +103,8 @@ public class MetricsUtilsTest {
                 metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
-        assertEquals(cpuUsageMetricsPercentage, 0.0);
-        assertEquals(memoryUsageMetricsPercentage, 0.0);
+        assertEquals(0.0, cpuUsageMetricsPercentage);
+        assertEquals(0.0, memoryUsageMetricsPercentage);
     }
 
     // Test for metrics failure when pod metrics containers is empty
@@ -125,8 +125,8 @@ public class MetricsUtilsTest {
                 metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
-        assertEquals(cpuUsageMetricsPercentage, 0.0);
-        assertEquals(memoryUsageMetricsPercentage, 0.0);
+        assertEquals(0.0, cpuUsageMetricsPercentage);
+        assertEquals(0.0, memoryUsageMetricsPercentage);
     }
 
     // Test for metrics failure when pod usage metrics is null
@@ -147,7 +147,7 @@ public class MetricsUtilsTest {
                 metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
-        assertEquals(cpuUsageMetricsPercentage, 0.0);
-        assertEquals(memoryUsageMetricsPercentage, 0.0);
+        assertEquals(0.0, cpuUsageMetricsPercentage);
+        assertEquals(0.0, memoryUsageMetricsPercentage);
     }
 }

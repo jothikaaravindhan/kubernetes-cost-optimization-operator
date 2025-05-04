@@ -25,7 +25,7 @@ public class MetricsUtils {
             String namespace, String podName, MetricType metricType) {
         BigDecimal allocatedMetrics = getAllocatedMetrics(podName, namespace, metricType);
         BigDecimal usageMetrics = getUsageMetrics(podName, namespace, metricType);
-        if (allocatedMetrics.compareTo(BigDecimal.ZERO) == 0) {
+        if (allocatedMetrics.doubleValue() == 0.0) {
             log.warn(
                     "Allocated metrics({}) are zero for pod: {} in namespace: {}",
                     metricType.name(),
@@ -33,7 +33,7 @@ public class MetricsUtils {
                     namespace);
             return 0.0;
         }
-        if (usageMetrics.compareTo(BigDecimal.ZERO) == 0) {
+        if (usageMetrics.doubleValue() == 0.0) {
             log.warn(
                     "Usage metrics({}) are zero for pod: {} in namespace: {}",
                     metricType.name(),
@@ -63,7 +63,7 @@ public class MetricsUtils {
         Pod podToGetMetrics =
                 kubernetesClient.pods().inNamespace(namespace).withName(podName).get();
 
-        if (podToGetMetrics == null) {
+        if (podToGetMetrics.getSpec() == null) {
             log.warn("Pod not found: {} in namespace: {}", podName, namespace);
             return BigDecimal.ZERO;
         }
