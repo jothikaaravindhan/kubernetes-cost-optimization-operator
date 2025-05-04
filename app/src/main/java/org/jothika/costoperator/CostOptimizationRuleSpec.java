@@ -3,30 +3,20 @@ package org.jothika.costoperator;
 import io.fabric8.crd.generator.annotation.PrinterColumn;
 
 public class CostOptimizationRuleSpec {
-    @PrinterColumn private String name;
-    @PrinterColumn private String namespace;
-    @PrinterColumn private String podName;
-    @PrinterColumn private String resourceType;
-    @PrinterColumn private int threshold;
+
+    @PrinterColumn(name = "Pod Name")
+    private String podName;
+
+    @PrinterColumn(name = "Resource Type")
+    private String resourceType;
+
+    @PrinterColumn(name = "Threshold")
+    private int threshold;
+
     private String notificationEmail;
-    @PrinterColumn private String status;
 
-    // Getters and Setters
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
+    @PrinterColumn(name = "Status")
+    private String status;
 
     public String getPodName() {
         return podName;

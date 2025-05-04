@@ -12,28 +12,20 @@ spec:
   scope: "Namespaced"
   versions:
   - additionalPrinterColumns:
-    - jsonPath: ".spec.name"
-      name: "NAME"
-      priority: 0
-      type: "string"
-    - jsonPath: ".spec.namespace"
-      name: "NAMESPACE"
-      priority: 0
-      type: "string"
     - jsonPath: ".spec.podName"
-      name: "PODNAME"
+      name: "Pod Name"
       priority: 0
       type: "string"
     - jsonPath: ".spec.resourceType"
-      name: "RESOURCETYPE"
+      name: "Resource Type"
       priority: 0
       type: "string"
     - jsonPath: ".spec.status"
-      name: "STATUS"
+      name: "Status"
       priority: 0
       type: "string"
     - jsonPath: ".spec.threshold"
-      name: "THRESHOLD"
+      name: "Threshold"
       priority: 0
       type: "integer"
     name: "v1"
@@ -42,10 +34,6 @@ spec:
         properties:
           spec:
             properties:
-              name:
-                type: "string"
-              namespace:
-                type: "string"
               notificationEmail:
                 type: "string"
               podName:
