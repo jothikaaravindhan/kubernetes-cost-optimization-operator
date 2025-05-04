@@ -31,9 +31,9 @@ Download the metrics-server yaml from https://github.com/kubernetes-sigs/metrics
 
 Modify this file to enable insecure-tls as described here https://github.com/kubernetes-sigs/metrics-server
 
-Create metrics server using the following command.
+Create metrics server using the following command. The modified yaml is available in the scripts/k8s directory.
 
->kubectl apply -f metrics-server.yaml
+>kubectl apply -f scripts/k8s/metrics-server.yaml
 
 Once installaed verify the metrics server installation as show below,
 

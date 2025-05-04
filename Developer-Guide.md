@@ -22,6 +22,19 @@ Verify that the java version is 21
 
 Brew tool in Mac environment used for this installation.
 
-* Version: 8.13
+* Version: 8.14
 
 > brew install gradle
+
+
+### CRD Generation
+CRD generation can be done using crd-gen tool as described in the [here](https://github.com/fabric8io/kubernetes-client/blob/main/crd-generator/cli/README.md)
+Follow the instructions in the above link to install the crd-gen tool. With this tool, the CRD generation can be done using the command below.
+
+> ./crd-gen <JAR_FILE> -o <OUTPUT_DIR>
+
+Example:
+
+> ./crd-gen app/build/libs/app-0.1.0-SNAPSHOT.jar -o app/crds
+
+This will generate the CRD yaml files in the output directory specified. The generated CRD files can be used for the operator deployment.
