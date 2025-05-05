@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 @EnableKubernetesMockClient
-public class CostOptimizationRuleReconcilerTest {
+class CostOptimizationRuleReconcilerTest {
 
     @Mock Context<CostOptimizationRule> context;
 
@@ -37,7 +37,7 @@ public class CostOptimizationRuleReconcilerTest {
 
     // Test reconcile method with mocked context
     @Test
-    public void testReconcile() {
+    void testReconcile() {
         String namespace = "test-namespace";
         String podName = "test-pod";
         String ruleName = "test-rule";
@@ -50,6 +50,7 @@ public class CostOptimizationRuleReconcilerTest {
         // Mock the kubernetes API endpoints
         testMockUtils.mockPodAllocatedMetricsK8sApiEndpoints(namespace, podName, "100m", "128Mi");
         testMockUtils.mockPodUsageMetricsK8sApiEndpoints(namespace, podName, "50m", "64Mi");
+        testMockUtils.mockEventsApiToEmptyResponse(namespace);
 
         // Call the reconcile method
         CostOptimizationRuleReconciler reconciler = new CostOptimizationRuleReconciler();
@@ -62,7 +63,7 @@ public class CostOptimizationRuleReconcilerTest {
 
     // Test cleanup method with mocked context
     @Test
-    public void testCleanup() {
+    void testCleanup() {
         // Create a mock CostOptimizationRule object
         CostOptimizationRule rule = new CostOptimizationRule();
         rule.getMetadata().setName("test-rule");

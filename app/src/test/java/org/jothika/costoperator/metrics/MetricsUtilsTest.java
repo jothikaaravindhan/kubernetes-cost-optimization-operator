@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @EnableKubernetesMockClient
-public class MetricsUtilsTest {
+class MetricsUtilsTest {
 
     KubernetesMockServer mockServer;
     private KubernetesClient client;

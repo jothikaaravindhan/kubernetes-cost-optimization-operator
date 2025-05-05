@@ -170,4 +170,13 @@ public class TestMockUtils {
                 .andReturn(HttpURLConnection.HTTP_OK, podMetrics)
                 .always();
     }
+
+    public void mockEventsApiToEmptyResponse(String namespace) {
+        mockServer
+                .expect()
+                .post()
+                .withPath(String.format("/api/v1/namespaces/%s/events", namespace))
+                .andReturn(HttpURLConnection.HTTP_OK, "{}")
+                .once();
+    }
 }
