@@ -4,14 +4,17 @@ import io.javaoperatorsdk.operator.api.reconciler.Cleaner;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration;
 import io.javaoperatorsdk.operator.api.reconciler.DeleteControl;
+import io.javaoperatorsdk.operator.api.reconciler.MaxReconciliationInterval;
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler;
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
-import org.jothika.costoperator.metrics.MetricType;
-import org.jothika.costoperator.metrics.MetricsUtils;
+import java.util.concurrent.TimeUnit;
+import org.jothika.costoperator.handlers.RuleHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ControllerConfiguration
+@ControllerConfiguration(
+        maxReconciliationInterval =
+                @MaxReconciliationInterval(interval = 10, timeUnit = TimeUnit.SECONDS))
 public class CostOptimizationRuleReconciler
         implements Reconciler<CostOptimizationRule>, Cleaner<CostOptimizationRule> {
 
@@ -19,30 +22,22 @@ public class CostOptimizationRuleReconciler
 
     public UpdateControl<CostOptimizationRule> reconcile(
             CostOptimizationRule primary, Context<CostOptimizationRule> context) {
-        log.info(
-                "Reconciling CostOptimizationOperatorCustomResource: {}",
+        log.debug(
+                "Reconciling {}.{}",
+                primary.getMetadata().getNamespace(),
                 primary.getMetadata().getName());
-        log.info("Namespace: {}", primary.getMetadata().getNamespace());
-        MetricsUtils metricsUtils = new MetricsUtils(context.getClient());
-        double metricUsagePercentage =
-                metricsUtils.getMetricUsagePercentage(
-                        primary.getMetadata().getNamespace(),
-                        primary.getSpec().getPodName(),
-                        MetricType.fromString(primary.getSpec().getResourceType()));
-        log.info(
-                "Metric({}) usage percentage: {}",
-                primary.getSpec().getResourceType(),
-                metricUsagePercentage);
+        RuleHandler ruleHandler = new RuleHandler(primary, context.getClient());
+        ruleHandler.reconcileRule();
         return UpdateControl.noUpdate();
     }
 
     @Override
     public DeleteControl cleanup(
             CostOptimizationRule primary, Context<CostOptimizationRule> context) {
-        log.info(
-                "Cleaning up CostOptimizationOperatorCustomResource: {}",
+        log.debug(
+                "Cleaning up {}.{}",
+                primary.getMetadata().getNamespace(),
                 primary.getMetadata().getName());
-        log.info("Namespace: {}", primary.getMetadata().getNamespace());
         return DeleteControl.defaultDelete();
     }
 }
