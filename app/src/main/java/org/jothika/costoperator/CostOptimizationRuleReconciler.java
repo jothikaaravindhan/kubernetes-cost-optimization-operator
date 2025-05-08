@@ -11,14 +11,21 @@ import java.util.concurrent.TimeUnit;
 import org.jothika.costoperator.handlers.RuleHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 @ControllerConfiguration(
         maxReconciliationInterval =
                 @MaxReconciliationInterval(interval = 10, timeUnit = TimeUnit.SECONDS))
+@Component
 public class CostOptimizationRuleReconciler
         implements Reconciler<CostOptimizationRule>, Cleaner<CostOptimizationRule> {
 
     private static final Logger log = LoggerFactory.getLogger(CostOptimizationRuleReconciler.class);
+    private final RuleHandler ruleHandler;
+
+    public CostOptimizationRuleReconciler(RuleHandler ruleHandler) {
+        this.ruleHandler = ruleHandler;
+    }
 
     public UpdateControl<CostOptimizationRule> reconcile(
             CostOptimizationRule primary, Context<CostOptimizationRule> context) {
@@ -26,8 +33,7 @@ public class CostOptimizationRuleReconciler
                 "Reconciling {}.{}",
                 primary.getMetadata().getNamespace(),
                 primary.getMetadata().getName());
-        RuleHandler ruleHandler = new RuleHandler(primary, context.getClient());
-        ruleHandler.reconcileRule();
+        ruleHandler.reconcileRule(primary);
         return UpdateControl.noUpdate();
     }
 

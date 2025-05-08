@@ -1,6 +1,7 @@
 package org.jothika.costoperator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -10,7 +11,10 @@ import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.api.reconciler.DeleteControl;
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.jothika.costoperator.events.EventGenerator;
+import org.jothika.costoperator.handlers.RuleHandler;
 import org.jothika.costoperator.metrics.MetricType;
+import org.jothika.costoperator.metrics.MetricsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -24,6 +28,7 @@ class CostOptimizationRuleReconcilerTest {
     private KubernetesMockServer mockServer;
     private KubernetesClient mockClient;
     private TestMockUtils testMockUtils;
+    private CostOptimizationRuleReconciler reconciler;
 
     @BeforeEach
     void setUp() {
@@ -33,6 +38,11 @@ class CostOptimizationRuleReconcilerTest {
         when(context.getClient()).thenReturn(mockClient);
         // Initialize the mock utils
         testMockUtils = new TestMockUtils(mockServer);
+        // Initialize the reconciler
+        EventGenerator eventGenerator = new EventGenerator(mockClient);
+        MetricsService metricsService = new MetricsService(mockClient);
+        RuleHandler ruleHandler = new RuleHandler(eventGenerator, metricsService);
+        reconciler = new CostOptimizationRuleReconciler(ruleHandler);
     }
 
     // Test reconcile method with mocked context
@@ -53,7 +63,6 @@ class CostOptimizationRuleReconcilerTest {
         testMockUtils.mockEventsApiToEmptyResponse(namespace);
 
         // Call the reconcile method
-        CostOptimizationRuleReconciler reconciler = new CostOptimizationRuleReconciler();
         UpdateControl<CostOptimizationRule> updateControl = reconciler.reconcile(rule, context);
 
         // Verification
@@ -73,7 +82,6 @@ class CostOptimizationRuleReconcilerTest {
         when(context.getClient()).thenReturn(mockClient);
 
         // Call the cleanup method
-        CostOptimizationRuleReconciler reconciler = new CostOptimizationRuleReconciler();
         DeleteControl deleteControl = reconciler.cleanup(rule, context);
 
         // Verification

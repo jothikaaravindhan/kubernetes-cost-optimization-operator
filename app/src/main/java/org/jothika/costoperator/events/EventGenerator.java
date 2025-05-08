@@ -10,7 +10,9 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EventGenerator {
 
     private final KubernetesClient kubernetesClient;

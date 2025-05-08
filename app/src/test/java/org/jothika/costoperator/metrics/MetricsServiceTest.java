@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @EnableKubernetesMockClient
-class MetricsUtilsTest {
+class MetricsServiceTest {
 
     KubernetesMockServer mockServer;
     private KubernetesClient client;
@@ -45,8 +45,8 @@ class MetricsUtilsTest {
                 .once();
 
         // When
-        MetricsUtils metricsUtils = new MetricsUtils(client);
-        boolean metricsServerAvailable = metricsUtils.isMetricsServerAvailable();
+        MetricsService metricsService = new MetricsService(client);
+        boolean metricsServerAvailable = metricsService.isMetricsServerAvailable();
 
         // Then
         assertTrue(metricsServerAvailable);
@@ -56,8 +56,8 @@ class MetricsUtilsTest {
     @DisplayName("Should return false when metrics server is unavailable")
     void testServerAvailableFailure() {
         // When
-        MetricsUtils metricsUtils = new MetricsUtils(client);
-        boolean metricsServerAvailable = metricsUtils.isMetricsServerAvailable();
+        MetricsService metricsService = new MetricsService(client);
+        boolean metricsServerAvailable = metricsService.isMetricsServerAvailable();
 
         // Then
         assertFalse(metricsServerAvailable);
@@ -74,11 +74,11 @@ class MetricsUtilsTest {
         testMockUtils.mockPodUsageMetricsK8sApiEndpoints(namespace, podName, "25m", "64Mi");
 
         // When
-        MetricsUtils metricsUtils = new MetricsUtils(client);
+        MetricsService metricsService = new MetricsService(client);
         double cpuUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
         double memoryUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
         assertEquals(25.0, cpuUsageMetricsPercentage);
@@ -96,11 +96,11 @@ class MetricsUtilsTest {
         testMockUtils.mockPodAllocatedMetricsToNullK8sApiEndpoints(namespace, podName);
 
         // When
-        MetricsUtils metricsUtils = new MetricsUtils(client);
+        MetricsService metricsService = new MetricsService(client);
         double cpuUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
         double memoryUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
         assertEquals(0.0, cpuUsageMetricsPercentage);
@@ -118,11 +118,11 @@ class MetricsUtilsTest {
         testMockUtils.mockPodAllocatedMetricsToEmptyK8sApiEndpoints(namespace, podName);
 
         // When
-        MetricsUtils metricsUtils = new MetricsUtils(client);
+        MetricsService metricsService = new MetricsService(client);
         double cpuUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
         double memoryUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
         assertEquals(0.0, cpuUsageMetricsPercentage);
@@ -140,11 +140,11 @@ class MetricsUtilsTest {
         testMockUtils.mockPodAllocatedMetricsK8sApiEndpoints(namespace, podName, "100m", "128Mi");
 
         // When
-        MetricsUtils metricsUtils = new MetricsUtils(client);
+        MetricsService metricsService = new MetricsService(client);
         double cpuUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.CPU);
         double memoryUsageMetricsPercentage =
-                metricsUtils.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
+                metricsService.getMetricUsagePercentage(namespace, podName, MetricType.MEMORY);
 
         // Then
         assertEquals(0.0, cpuUsageMetricsPercentage);
