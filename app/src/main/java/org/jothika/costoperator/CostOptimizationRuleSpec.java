@@ -15,9 +15,6 @@ public class CostOptimizationRuleSpec {
 
     private String notificationEmail;
 
-    @PrinterColumn(name = "Status")
-    private String status;
-
     public String getPodName() {
         return podName;
     }
@@ -48,13 +45,5 @@ public class CostOptimizationRuleSpec {
 
     public void setNotificationEmail(String notificationEmail) {
         this.notificationEmail = notificationEmail;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

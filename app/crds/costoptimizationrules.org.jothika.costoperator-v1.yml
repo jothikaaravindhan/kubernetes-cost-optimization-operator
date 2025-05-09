@@ -20,14 +20,14 @@ spec:
       name: "Resource Type"
       priority: 0
       type: "string"
-    - jsonPath: ".spec.status"
-      name: "Status"
-      priority: 0
-      type: "string"
     - jsonPath: ".spec.threshold"
       name: "Threshold"
       priority: 0
       type: "integer"
+    - jsonPath: ".status.ruleStatus"
+      name: "Status"
+      priority: 0
+      type: "string"
     name: "v1"
     schema:
       openAPIV3Schema:
@@ -40,12 +40,13 @@ spec:
                 type: "string"
               resourceType:
                 type: "string"
-              status:
-                type: "string"
               threshold:
                 type: "integer"
             type: "object"
           status:
+            properties:
+              ruleStatus:
+                type: "string"
             type: "object"
         type: "object"
     served: true

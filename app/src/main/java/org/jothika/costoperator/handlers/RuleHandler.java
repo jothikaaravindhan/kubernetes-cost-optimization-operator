@@ -2,6 +2,8 @@ package org.jothika.costoperator.handlers;
 
 import java.time.Instant;
 import org.jothika.costoperator.CostOptimizationRule;
+import org.jothika.costoperator.CostOptimizationRuleStatus;
+import org.jothika.costoperator.RuleStatus;
 import org.jothika.costoperator.events.EventGenerator;
 import org.jothika.costoperator.events.EventType;
 import org.jothika.costoperator.mail.EmailService;
@@ -28,9 +30,22 @@ public class RuleHandler {
         this.emailService = emailService;
     }
 
-    public void reconcileRule(CostOptimizationRule costOptimizationRule) {
+    public CostOptimizationRule reconcileRule(CostOptimizationRule costOptimizationRule) {
         Instant reconciliationStartTime = Instant.now();
-
+        if (costOptimizationRule.getStatus() == null) {
+            CostOptimizationRuleStatus costOptimizationRuleStatus =
+                    new CostOptimizationRuleStatus();
+            costOptimizationRuleStatus.setRuleStatus(RuleStatus.CREATED.getStatus());
+            costOptimizationRule.setStatus(costOptimizationRuleStatus);
+        } else if (costOptimizationRule
+                .getStatus()
+                .getRuleStatus()
+                .equals(RuleStatus.COMPLETED.getStatus())) {
+            log.info(
+                    "Rule {} is in COMPLETED state. Skipping reconciliation.",
+                    costOptimizationRule.getMetadata().getName());
+            return costOptimizationRule;
+        }
         double metricUsagePercentage =
                 metricsService.getMetricUsagePercentage(
                         costOptimizationRule.getMetadata().getNamespace(),
@@ -57,6 +72,8 @@ public class RuleHandler {
                     "Email notification sent at " + reconciliationStartTime,
                     message,
                     EventType.NORMAL);
+            costOptimizationRule.getStatus().setRuleStatus(RuleStatus.COMPLETED.getStatus());
+            return costOptimizationRule;
         } else {
             message =
                     String.format(
@@ -70,6 +87,8 @@ public class RuleHandler {
                     "Reconciliation at " + reconciliationStartTime,
                     message,
                     EventType.NORMAL);
+            costOptimizationRule.getStatus().setRuleStatus(RuleStatus.ACTIVE.getStatus());
+            return costOptimizationRule;
         }
     }
 }
