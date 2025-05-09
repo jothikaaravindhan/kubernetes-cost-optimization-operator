@@ -1,5 +1,6 @@
 package org.jothika.costoperator.handlers;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,6 +10,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
 import org.jothika.costoperator.CostOptimizationRule;
+import org.jothika.costoperator.CostOptimizationRuleStatus;
 import org.jothika.costoperator.TestMockUtils;
 import org.jothika.costoperator.events.EventGenerator;
 import org.jothika.costoperator.events.EventType;
@@ -111,5 +113,23 @@ class RuleHandlerTest {
         assertEquals(rule.getApiVersion(), event.getInvolvedObject().getApiVersion());
         assertEquals(rule.getKind(), event.getInvolvedObject().getKind());
         assertEquals(EventType.NORMAL.getType(), event.getType());
+    }
+
+    @ParameterizedTest
+    @EnumSource(MetricType.class)
+    void testReconcileRuleCompletedState(MetricType metricType) {
+        String namespace = "test-namespace";
+        String podName = "test-pod";
+        // Create a mock CostOptimizationRule object
+        CostOptimizationRule rule =
+                testMockUtils.getCostOptimizationRule(
+                        "test-rule", namespace, podName, metricType, 20);
+
+        CostOptimizationRuleStatus status = new CostOptimizationRuleStatus();
+        status.setRuleStatus("Completed");
+        rule.setStatus(status);
+
+        // Call the reconcile method
+        assertDoesNotThrow(() -> ruleHandler.reconcileRule(rule));
     }
 }
