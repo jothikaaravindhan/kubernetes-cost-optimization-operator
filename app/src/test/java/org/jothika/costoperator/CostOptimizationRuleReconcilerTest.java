@@ -13,6 +13,7 @@ import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jothika.costoperator.events.EventGenerator;
 import org.jothika.costoperator.handlers.RuleHandler;
+import org.jothika.costoperator.mail.EmailService;
 import org.jothika.costoperator.metrics.MetricType;
 import org.jothika.costoperator.metrics.MetricsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ import org.mockito.MockitoAnnotations;
 class CostOptimizationRuleReconcilerTest {
 
     @Mock Context<CostOptimizationRule> context;
-
+    @Mock EmailService emailService;
     private KubernetesMockServer mockServer;
     private KubernetesClient mockClient;
     private TestMockUtils testMockUtils;
@@ -41,7 +42,7 @@ class CostOptimizationRuleReconcilerTest {
         // Initialize the reconciler
         EventGenerator eventGenerator = new EventGenerator(mockClient);
         MetricsService metricsService = new MetricsService(mockClient);
-        RuleHandler ruleHandler = new RuleHandler(eventGenerator, metricsService);
+        RuleHandler ruleHandler = new RuleHandler(eventGenerator, metricsService, emailService);
         reconciler = new CostOptimizationRuleReconciler(ruleHandler);
     }
 
@@ -67,7 +68,7 @@ class CostOptimizationRuleReconcilerTest {
 
         // Verification
         assertNotNull(updateControl);
-        assertTrue(updateControl.isNoUpdate());
+        assertTrue(updateControl.isPatchStatus());
     }
 
     // Test cleanup method with mocked context

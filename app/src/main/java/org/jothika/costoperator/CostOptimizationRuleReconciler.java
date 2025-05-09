@@ -34,7 +34,7 @@ public class CostOptimizationRuleReconciler
                 primary.getMetadata().getNamespace(),
                 primary.getMetadata().getName());
         ruleHandler.reconcileRule(primary);
-        return UpdateControl.noUpdate();
+        return UpdateControl.patchStatus(primary);
     }
 
     @Override

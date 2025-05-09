@@ -12,16 +12,20 @@ import org.jothika.costoperator.CostOptimizationRule;
 import org.jothika.costoperator.TestMockUtils;
 import org.jothika.costoperator.events.EventGenerator;
 import org.jothika.costoperator.events.EventType;
+import org.jothika.costoperator.mail.EmailService;
 import org.jothika.costoperator.metrics.MetricType;
 import org.jothika.costoperator.metrics.MetricsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 @EnableKubernetesMockClient
 class RuleHandlerTest {
 
     TestMockUtils testMockUtils;
+    @Mock EmailService emailService;
     private KubernetesMockServer mockServer;
     private KubernetesClient kubernetesClient;
     private RuleHandler ruleHandler;
@@ -29,9 +33,10 @@ class RuleHandlerTest {
     @BeforeEach
     void setUp() {
         // Setup default mock behavior
+        MockitoAnnotations.openMocks(this);
         EventGenerator eventGenerator = new EventGenerator(kubernetesClient);
         MetricsService metricsService = new MetricsService(kubernetesClient);
-        ruleHandler = new RuleHandler(eventGenerator, metricsService);
+        ruleHandler = new RuleHandler(eventGenerator, metricsService, emailService);
         testMockUtils = new TestMockUtils(mockServer);
     }
 
