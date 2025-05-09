@@ -6,13 +6,15 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-public class MetricsUtils {
+@Service
+public class MetricsService {
 
-    private static final Logger log = LoggerFactory.getLogger(MetricsUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(MetricsService.class);
     private final KubernetesClient kubernetesClient;
 
-    public MetricsUtils(KubernetesClient kubernetesClient) {
+    public MetricsService(KubernetesClient kubernetesClient) {
         this.kubernetesClient = kubernetesClient;
     }
 
