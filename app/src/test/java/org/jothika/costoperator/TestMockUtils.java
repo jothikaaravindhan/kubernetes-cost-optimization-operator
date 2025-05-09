@@ -177,6 +177,6 @@ public class TestMockUtils {
                 .post()
                 .withPath(String.format("/api/v1/namespaces/%s/events", namespace))
                 .andReturn(HttpURLConnection.HTTP_OK, "{}")
-                .once();
+                .always();
     }
 }

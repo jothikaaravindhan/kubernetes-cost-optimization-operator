@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Kubernetes Pod Threshold Alert</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background-color: #f8f9fa;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .alert {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .details {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #6c757d;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h2>Kubernetes Pod Resource Threshold Alert</h2>
+  </div>
+
+  <p class="alert">The configured threshold for a Kubernetes pod has been reached!</p>
+
+  <div class="details">
+    <p><strong>Pod Name:</strong> <span th:text="${podName}">pod-name</span></p>
+    <p><strong>Namespace:</strong> <span th:text="${namespace}">namespace</span></p>
+    <p><strong>Resource Type:</strong> <span th:text="${resourceType}">resource-type</span></p>
+    <p><strong>Configured Threshold:</strong> <span
+        th:text="${configuredThreshold}">threshold</span></p>
+    <p><strong>Actual Usage:</strong> <span th:text="${actualUsage}">value</span></p>
+    <p><strong>Time of Alert:</strong> <span th:text="${alertTime}">timestamp</span></p>
+  </div>
+
+  <p>Please take appropriate action to address this issue.</p>
+
+  <div class="footer">
+    <p>This is an automated notification. Please do not reply to this email.</p>
+  </div>
+</div>
+</body>
+</html>

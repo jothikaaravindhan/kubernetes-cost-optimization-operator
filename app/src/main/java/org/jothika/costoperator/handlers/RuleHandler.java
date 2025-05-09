@@ -4,6 +4,7 @@ import java.time.Instant;
 import org.jothika.costoperator.CostOptimizationRule;
 import org.jothika.costoperator.events.EventGenerator;
 import org.jothika.costoperator.events.EventType;
+import org.jothika.costoperator.mail.EmailService;
 import org.jothika.costoperator.metrics.MetricType;
 import org.jothika.costoperator.metrics.MetricsService;
 import org.slf4j.Logger;
@@ -16,10 +17,15 @@ public class RuleHandler {
     private static final Logger log = LoggerFactory.getLogger(RuleHandler.class);
     EventGenerator eventGenerator;
     MetricsService metricsService;
+    EmailService emailService;
 
-    public RuleHandler(EventGenerator eventGenerator, MetricsService metricsService) {
+    public RuleHandler(
+            EventGenerator eventGenerator,
+            MetricsService metricsService,
+            EmailService emailService) {
         this.eventGenerator = eventGenerator;
         this.metricsService = metricsService;
+        this.emailService = emailService;
     }
 
     public void reconcileRule(CostOptimizationRule costOptimizationRule) {
@@ -38,8 +44,19 @@ public class RuleHandler {
                             costOptimizationRule.getSpec().getResourceType(),
                             metricUsagePercentage,
                             costOptimizationRule.getSpec().getThreshold());
+            eventGenerator.generateEvent(
+                    costOptimizationRule,
+                    "Reconciliation at " + reconciliationStartTime,
+                    message,
+                    EventType.NORMAL);
+            log.info(message);
             // send email to user
-
+            emailService.sendAlertOnPodThreshold(costOptimizationRule, metricUsagePercentage);
+            eventGenerator.generateEvent(
+                    costOptimizationRule,
+                    "Email notification sent at " + reconciliationStartTime,
+                    message,
+                    EventType.NORMAL);
         } else {
             message =
                     String.format(
@@ -47,12 +64,12 @@ public class RuleHandler {
                             costOptimizationRule.getSpec().getResourceType(),
                             metricUsagePercentage,
                             costOptimizationRule.getSpec().getThreshold());
+            log.info(message);
+            eventGenerator.generateEvent(
+                    costOptimizationRule,
+                    "Reconciliation at " + reconciliationStartTime,
+                    message,
+                    EventType.NORMAL);
         }
-        log.info(message);
-        eventGenerator.generateEvent(
-                costOptimizationRule,
-                "Reconciliation at " + reconciliationStartTime,
-                message,
-                EventType.NORMAL);
     }
 }

@@ -38,6 +38,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Spring Boot Starter Email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     // Java Operator SDK
     implementation("io.javaoperatorsdk:operator-framework:$josdkVersion")
