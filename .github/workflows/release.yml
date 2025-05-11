@@ -1,0 +1,67 @@
+name: Release Build and Helm Chart
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  docker-build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image with Jib
+        run: |
+          ./gradlew jib -Djib.to.image=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/cost-optimization-operator:${{ github.event.release.tag_name }}
+        env:
+          _JIB_GRADLE_IMAGE_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          _JIB_GRADLE_IMAGE_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  helm-build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Build Helm Chart
+        run: |
+          helm version
+          CHART_DIR="charts/cost-optimization-operator"
+          helm package "$CHART_DIR" --version ${{ github.event.release.tag_name }} --app-version ${{ github.event.release.tag_name }}
+          echo "Helm chart built successfully."
+
+      - name: Upload Helm Chart as Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: "*.tgz"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
