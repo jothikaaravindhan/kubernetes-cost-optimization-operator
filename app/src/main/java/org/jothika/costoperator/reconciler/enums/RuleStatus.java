@@ -3,7 +3,8 @@ package org.jothika.costoperator.reconciler.enums;
 public enum RuleStatus {
     CREATED("Created"),
     ACTIVE("Active"),
-    COMPLETED("Completed");
+    COMPLETED("Completed"),
+    FAILED("Failed");
 
     private final String status;
 

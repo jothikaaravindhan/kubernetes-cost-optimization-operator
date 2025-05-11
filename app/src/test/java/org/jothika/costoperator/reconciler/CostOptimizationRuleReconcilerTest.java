@@ -14,6 +14,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jothika.costoperator.TestMockUtils;
 import org.jothika.costoperator.events.EventGenerator;
 import org.jothika.costoperator.handlers.RuleHandler;
+import org.jothika.costoperator.handlers.RuleValidator;
 import org.jothika.costoperator.mail.EmailService;
 import org.jothika.costoperator.metrics.MetricType;
 import org.jothika.costoperator.metrics.MetricsService;
@@ -44,7 +45,9 @@ class CostOptimizationRuleReconcilerTest {
         // Initialize the reconciler
         EventGenerator eventGenerator = new EventGenerator(mockClient);
         MetricsService metricsService = new MetricsService(mockClient);
-        RuleHandler ruleHandler = new RuleHandler(eventGenerator, metricsService, emailService);
+        RuleValidator ruleValidator = new RuleValidator(mockClient);
+        RuleHandler ruleHandler =
+                new RuleHandler(eventGenerator, metricsService, emailService, ruleValidator);
         reconciler = new CostOptimizationRuleReconciler(ruleHandler);
     }
 
