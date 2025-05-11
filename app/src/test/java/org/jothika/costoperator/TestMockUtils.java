@@ -19,6 +19,9 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 import org.jothika.costoperator.metrics.MetricType;
+import org.jothika.costoperator.reconciler.CostOptimizationRule;
+import org.jothika.costoperator.reconciler.CostOptimizationRuleSpec;
+import org.jothika.costoperator.reconciler.enums.ThresholdCondition;
 
 public class TestMockUtils {
 
@@ -33,6 +36,7 @@ public class TestMockUtils {
             String namespace,
             String podName,
             MetricType resourceType,
+            ThresholdCondition thresholdCondition,
             int threshold) {
         CostOptimizationRule rule = new CostOptimizationRule();
         rule.getMetadata().setName(ruleName);
@@ -40,6 +44,7 @@ public class TestMockUtils {
         CostOptimizationRuleSpec costOptimizationRuleSpec = new CostOptimizationRuleSpec();
         costOptimizationRuleSpec.setPodName(podName);
         costOptimizationRuleSpec.setResourceType(resourceType.name());
+        costOptimizationRuleSpec.setThresholdCondition(thresholdCondition);
         costOptimizationRuleSpec.setThreshold(threshold);
         rule.setSpec(costOptimizationRuleSpec);
         return rule;

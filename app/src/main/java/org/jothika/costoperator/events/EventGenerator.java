@@ -42,6 +42,7 @@ public class EventGenerator {
                         .endMetadata()
                         .withInvolvedObject(objectReference)
                         .withType(type.getType())
+                        .withRelated(objectReference)
                         .withMessage(message)
                         .withFirstTimestamp(
                                 DateTimeFormatter.ISO_INSTANT.format(

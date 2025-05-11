@@ -1,4 +1,4 @@
-package org.jothika.costoperator;
+package org.jothika.costoperator.reconciler;
 
 import io.javaoperatorsdk.operator.api.reconciler.Cleaner;
 import io.javaoperatorsdk.operator.api.reconciler.Context;

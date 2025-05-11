@@ -5,7 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.jothika.costoperator.CostOptimizationRule;
+import org.jothika.costoperator.reconciler.CostOptimizationRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,6 +66,7 @@ public class EmailService {
         context.setVariable("podName", rule.getSpec().getPodName());
         context.setVariable("namespace", rule.getMetadata().getNamespace());
         context.setVariable("resourceType", rule.getSpec().getResourceType());
+        context.setVariable("configuredThresholdCondition", rule.getSpec().getThresholdCondition());
         context.setVariable("configuredThreshold", rule.getSpec().getThreshold());
         context.setVariable("actualUsage", actualUsage);
         context.setVariable(

@@ -1,6 +1,7 @@
-package org.jothika.costoperator;
+package org.jothika.costoperator.reconciler;
 
 import io.fabric8.crd.generator.annotation.PrinterColumn;
+import org.jothika.costoperator.reconciler.enums.ThresholdCondition;
 
 public class CostOptimizationRuleSpec {
 
@@ -10,8 +11,11 @@ public class CostOptimizationRuleSpec {
     @PrinterColumn(name = "Resource Type")
     private String resourceType;
 
+    @PrinterColumn(name = "Condition")
+    private ThresholdCondition thresholdCondition;
+
     @PrinterColumn(name = "Threshold")
-    private int threshold;
+    private double threshold;
 
     private String notificationEmail;
 
@@ -31,11 +35,19 @@ public class CostOptimizationRuleSpec {
         this.resourceType = resourceType;
     }
 
-    public int getThreshold() {
+    public ThresholdCondition getThresholdCondition() {
+        return thresholdCondition;
+    }
+
+    public void setThresholdCondition(ThresholdCondition thresholdCondition) {
+        this.thresholdCondition = thresholdCondition;
+    }
+
+    public double getThreshold() {
         return threshold;
     }
 
-    public void setThreshold(int threshold) {
+    public void setThreshold(double threshold) {
         this.threshold = threshold;
     }
 
