@@ -23,7 +23,11 @@ spec:
     - jsonPath: ".spec.threshold"
       name: "Threshold"
       priority: 0
-      type: "integer"
+      type: "number"
+    - jsonPath: ".spec.thresholdCondition"
+      name: "Condition"
+      priority: 0
+      type: "string"
     - jsonPath: ".status.ruleStatus"
       name: "Status"
       priority: 0
@@ -41,11 +45,21 @@ spec:
               resourceType:
                 type: "string"
               threshold:
-                type: "integer"
+                type: "number"
+              thresholdCondition:
+                enum:
+                - "EQUALS"
+                - "GREATERTHAN"
+                - "LESSTHAN"
+                type: "string"
             type: "object"
           status:
             properties:
               ruleStatus:
+                enum:
+                - "ACTIVE"
+                - "COMPLETED"
+                - "CREATED"
                 type: "string"
             type: "object"
         type: "object"

@@ -1,4 +1,4 @@
-package org.jothika.costoperator;
+package org.jothika.costoperator.reconciler.enums;
 
 public enum RuleStatus {
     CREATED("Created"),

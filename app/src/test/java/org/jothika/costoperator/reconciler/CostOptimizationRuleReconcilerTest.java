@@ -1,4 +1,4 @@
-package org.jothika.costoperator;
+package org.jothika.costoperator.reconciler;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,11 +11,13 @@ import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.api.reconciler.DeleteControl;
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.jothika.costoperator.TestMockUtils;
 import org.jothika.costoperator.events.EventGenerator;
 import org.jothika.costoperator.handlers.RuleHandler;
 import org.jothika.costoperator.mail.EmailService;
 import org.jothika.costoperator.metrics.MetricType;
 import org.jothika.costoperator.metrics.MetricsService;
+import org.jothika.costoperator.reconciler.enums.ThresholdCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -57,7 +59,12 @@ class CostOptimizationRuleReconcilerTest {
         // Create a CostOptimizationRule object
         CostOptimizationRule rule =
                 testMockUtils.getCostOptimizationRule(
-                        ruleName, namespace, podName, MetricType.CPU, threshold);
+                        ruleName,
+                        namespace,
+                        podName,
+                        MetricType.CPU,
+                        ThresholdCondition.LESSTHAN,
+                        threshold);
         // Mock the kubernetes API endpoints
         testMockUtils.mockPodAllocatedMetricsK8sApiEndpoints(namespace, podName, "100m", "128Mi");
         testMockUtils.mockPodUsageMetricsK8sApiEndpoints(namespace, podName, "50m", "64Mi");

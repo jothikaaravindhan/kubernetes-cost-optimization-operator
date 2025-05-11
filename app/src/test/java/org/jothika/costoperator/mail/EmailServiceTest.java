@@ -12,9 +12,10 @@ import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
 import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import org.jothika.costoperator.CostOptimizationRule;
 import org.jothika.costoperator.TestMockUtils;
 import org.jothika.costoperator.metrics.MetricType;
+import org.jothika.costoperator.reconciler.CostOptimizationRule;
+import org.jothika.costoperator.reconciler.enums.ThresholdCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -48,7 +49,12 @@ class EmailServiceTest {
         int threshold = 80;
         rule =
                 testMockUtils.getCostOptimizationRule(
-                        ruleName, namespace, podName, MetricType.CPU, threshold);
+                        ruleName,
+                        namespace,
+                        podName,
+                        MetricType.CPU,
+                        ThresholdCondition.LESSTHAN,
+                        threshold);
         rule.getSpec().setNotificationEmail("to@mail.com");
     }
 

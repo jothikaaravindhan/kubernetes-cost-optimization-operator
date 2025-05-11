@@ -1,4 +1,4 @@
-package org.jothika.costoperator;
+package org.jothika.costoperator.reconciler;
 
 import io.fabric8.kubernetes.api.model.Namespaced;
 import io.fabric8.kubernetes.client.CustomResource;

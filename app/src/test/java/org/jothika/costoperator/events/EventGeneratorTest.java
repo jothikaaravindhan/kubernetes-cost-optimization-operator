@@ -10,9 +10,10 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.server.mock.EnableKubernetesMockClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
 import java.net.HttpURLConnection;
-import org.jothika.costoperator.CostOptimizationRule;
 import org.jothika.costoperator.TestMockUtils;
 import org.jothika.costoperator.metrics.MetricType;
+import org.jothika.costoperator.reconciler.CostOptimizationRule;
+import org.jothika.costoperator.reconciler.enums.ThresholdCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,12 @@ class EventGeneratorTest {
 
         CostOptimizationRule rule =
                 testMockUtils.getCostOptimizationRule(
-                        "sample-rule", namespace, podName, MetricType.CPU, 30);
+                        "sample-rule",
+                        namespace,
+                        podName,
+                        MetricType.CPU,
+                        ThresholdCondition.LESSTHAN,
+                        30);
         testMockUtils.mockEventsApiToEmptyResponse(namespace);
 
         // When
@@ -71,7 +77,12 @@ class EventGeneratorTest {
 
         CostOptimizationRule rule =
                 testMockUtils.getCostOptimizationRule(
-                        "sample-rule", namespace, podName, MetricType.CPU, 30);
+                        "sample-rule",
+                        namespace,
+                        podName,
+                        MetricType.CPU,
+                        ThresholdCondition.LESSTHAN,
+                        30);
 
         mockServer
                 .expect()
