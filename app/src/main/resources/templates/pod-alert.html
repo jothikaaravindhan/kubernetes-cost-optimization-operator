@@ -2,70 +2,162 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Kubernetes Pod Threshold Alert</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resource Threshold Alert</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.6;
-      color: #333;
+      color: #2d3748;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #e2e8f0, #edf2f7);
     }
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
+    .email-container {
+      max-width: 640px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     }
 
     .header {
-      background-color: #f8f9fa;
-      padding: 15px;
+      padding: 36px 24px;
       text-align: center;
+      background: linear-gradient(90deg, #4299e1 0%, #38b2ac 100%);
+      color: white;
     }
 
-    .alert {
-      color: #dc3545;
-      font-weight: bold;
+    .app-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.5px;
     }
 
-    .details {
-      margin: 20px 0;
-      padding: 15px;
-      background-color: #f8f9fa;
-      border-radius: 5px;
+    .content {
+      padding: 32px;
+    }
+
+    .alert-banner {
+      background-color: #fff5f5;
+      border-left: 5px solid #e53e3e;
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-bottom: 28px;
+    }
+
+    .alert-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c53030;
+      margin: 0 0 8px;
+      display: flex;
+      align-items: center;
+    }
+
+    .alert-title:before {
+      content: "⚠️";
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
+    .detail-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #f9fbfd;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .detail-label {
+      width: 180px;
+      font-weight: 600;
+      color: #4a5568;
+      font-size: 14px;
+    }
+
+    .detail-value {
+      flex: 1;
+      font-size: 14px;
+      color: #2d3748;
+      word-break: break-word;
     }
 
     .footer {
-      margin-top: 20px;
-      font-size: 0.9em;
-      color: #6c757d;
+      padding: 24px;
       text-align: center;
+      font-size: 12px;
+      color: #a0aec0;
+      background: #f7fafc;
+      border-top: 1px solid #e2e8f0;
     }
   </style>
 </head>
 <body>
-<div class="container">
+<div class="email-container">
   <div class="header">
-    <h2>Kubernetes Pod Resource Threshold Alert</h2>
+    <h1 class="app-title">Cost Optimization Operator</h1>
   </div>
 
-  <p class="alert">The configured threshold for a Kubernetes pod has been reached!</p>
+  <div class="content">
+    <div class="alert-banner">
+      <h2 class="alert-title">Resource Threshold Exceeded</h2>
+      <p>Immediate attention required for the following Kubernetes resource</p>
+    </div>
 
-  <div class="details">
-    <p><strong>Pod Name:</strong> <span th:text="${podName}">pod-name</span></p>
-    <p><strong>Namespace:</strong> <span th:text="${namespace}">namespace</span></p>
-    <p><strong>Resource Type:</strong> <span th:text="${resourceType}">resource-type</span></p>
-    <p><strong>Configured Threshold Condition:</strong> <span
-        th:text="${configuredThresholdCondition}">threshold-condition</span></p>
-    <p><strong>Configured Threshold:</strong> <span
-        th:text="${configuredThreshold}">threshold</span></p>
-    <p><strong>Actual Usage:</strong> <span th:text="${actualUsage}">value</span></p>
-    <p><strong>Time of Alert:</strong> <span th:text="${alertTime}">timestamp</span></p>
+    <div class="detail-card">
+      <div class="detail-row">
+        <div class="detail-label">Pod Name:</div>
+        <div class="detail-value" th:text="${podName}">pod-name</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Namespace:</div>
+        <div class="detail-value" th:text="${namespace}">namespace</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Resource Type:</div>
+        <div class="detail-value" th:text="${resourceType}">resource-type</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Threshold Condition:</div>
+        <div class="detail-value" th:text="${configuredThresholdCondition}">threshold-condition</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Configured Threshold:</div>
+        <div class="detail-value" th:text="${configuredThreshold}">threshold</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Actual Usage:</div>
+        <div class="detail-value" th:text="${actualUsage}">value</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Alert Time:</div>
+        <div class="detail-value" th:text="${alertTime}">timestamp</div>
+      </div>
+    </div>
+
+    <p>Please investigate and take appropriate action to resolve this issue.</p>
   </div>
-
-  <p>Please take appropriate action to address this issue.</p>
 
   <div class="footer">
-    <p>This is an automated notification. Please do not reply to this email.</p>
+    <p>This is an automated alert from Cost Optimization Operator.</p>
+    <p>Please do not reply to this message.</p>
   </div>
 </div>
 </body>
