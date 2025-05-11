@@ -35,6 +35,8 @@ jobs:
 
   helm-build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
