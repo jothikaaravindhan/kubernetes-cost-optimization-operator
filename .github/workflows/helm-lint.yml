@@ -1,11 +1,11 @@
 # https://github.com/helm/chart-testing-action
 
-name: Lint and Test Helm Charts
+name: Lint Helm Charts
 
 on: pull_request
 
 jobs:
-  lint-test:
+  lint-helm-chart:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
