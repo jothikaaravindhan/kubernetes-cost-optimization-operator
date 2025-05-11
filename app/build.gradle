@@ -4,6 +4,7 @@
  * This generated file contains a sample Java application project to get you started.
  * For more details on building Java & JVM projects, please refer to https://docs.gradle.org/8.13/userguide/building_java_projects.html in the Gradle documentation.
  */
+import com.google.cloud.tools.jib.gradle.JibTask
 
 plugins {
     id("java")
@@ -11,7 +12,7 @@ plugins {
     id("jacoco")
     id("com.google.cloud.tools.jib") version "3.4.5"
     id("com.diffplug.spotless") version "7.0.3"
-    id("org.sonarqube") version "6.0.1.5171"
+    id("org.sonarqube") version "6.1.0.5360"
     id("org.springframework.boot") version "3.4.5"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -127,6 +128,11 @@ jib {
         mainClass = "org.jothika.costoperator.Runner"
         creationTime = "USE_CURRENT_TIMESTAMP"
     }
+}
+
+// Jib work around for configuration cache
+tasks.withType(JibTask).configureEach {
+    notCompatibleWithConfigurationCache("because https://github.com/GoogleContainerTools/jib/issues/3132")
 }
 
 sonar {
