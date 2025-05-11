@@ -21,14 +21,17 @@ public class RuleHandler {
     EventGenerator eventGenerator;
     MetricsService metricsService;
     EmailService emailService;
+    RuleValidator ruleValidator;
 
     public RuleHandler(
             EventGenerator eventGenerator,
             MetricsService metricsService,
-            EmailService emailService) {
+            EmailService emailService,
+            RuleValidator ruleValidator) {
         this.eventGenerator = eventGenerator;
         this.metricsService = metricsService;
         this.emailService = emailService;
+        this.ruleValidator = ruleValidator;
     }
 
     public CostOptimizationRule reconcileRule(CostOptimizationRule costOptimizationRule) {
@@ -38,23 +41,50 @@ public class RuleHandler {
                     new CostOptimizationRuleStatus();
             costOptimizationRuleStatus.setRuleStatus(RuleStatus.CREATED);
             costOptimizationRule.setStatus(costOptimizationRuleStatus);
-        } else if (costOptimizationRule.getStatus().getRuleStatus().equals(RuleStatus.COMPLETED)) {
+        } else if (costOptimizationRule.getStatus().getRuleStatus().equals(RuleStatus.COMPLETED)
+                || costOptimizationRule.getStatus().getRuleStatus().equals(RuleStatus.FAILED)) {
             log.info(
-                    "Rule {} is in COMPLETED state. Skipping reconciliation.",
-                    costOptimizationRule.getMetadata().getName());
+                    "Rule {} is in {} state. Skipping reconciliation.",
+                    costOptimizationRule.getMetadata().getName(),
+                    costOptimizationRule.getStatus().getRuleStatus());
             return costOptimizationRule;
         }
+        if (ruleValidator.isValidRule(costOptimizationRule)) {
+            return startReconciliation(costOptimizationRule, reconciliationStartTime);
+        } else {
+            String message =
+                    String.format(
+                            "Pod %s in namespace %s does not exist. Skipping reconciliation.",
+                            costOptimizationRule.getSpec().getPodName(),
+                            costOptimizationRule.getMetadata().getNamespace());
+            log.warn(message);
+            eventGenerator.generateEvent(
+                    costOptimizationRule,
+                    "Reconciliation at " + reconciliationStartTime,
+                    message,
+                    EventType.WARNING);
+            CostOptimizationRuleStatus costOptimizationRuleStatus =
+                    new CostOptimizationRuleStatus();
+            costOptimizationRuleStatus.setRuleStatus(RuleStatus.FAILED);
+            costOptimizationRule.setStatus(costOptimizationRuleStatus);
+            return costOptimizationRule;
+        }
+    }
+
+    CostOptimizationRule startReconciliation(
+            CostOptimizationRule costOptimizationRule, Instant reconciliationStartTime) {
         double metricUsagePercentage =
                 metricsService.getMetricUsagePercentage(
                         costOptimizationRule.getMetadata().getNamespace(),
                         costOptimizationRule.getSpec().getPodName(),
                         MetricType.fromString(costOptimizationRule.getSpec().getResourceType()));
         String message;
+        String reconciliationAt = "Reconciliation at ";
         if (isThresholdCrossed(costOptimizationRule, metricUsagePercentage)) {
             message = getThresholdEventMessage(costOptimizationRule, metricUsagePercentage);
             eventGenerator.generateEvent(
                     costOptimizationRule,
-                    "Reconciliation at " + reconciliationStartTime,
+                    reconciliationAt + reconciliationStartTime,
                     message,
                     EventType.NORMAL);
             log.info(message);
@@ -72,7 +102,7 @@ public class RuleHandler {
             log.info(message);
             eventGenerator.generateEvent(
                     costOptimizationRule,
-                    "Reconciliation at " + reconciliationStartTime,
+                    reconciliationAt + reconciliationStartTime,
                     message,
                     EventType.NORMAL);
             costOptimizationRule.getStatus().setRuleStatus(RuleStatus.ACTIVE);

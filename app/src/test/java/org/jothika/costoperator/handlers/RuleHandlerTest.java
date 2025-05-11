@@ -22,6 +22,7 @@ import org.jothika.costoperator.reconciler.CostOptimizationRuleStatus;
 import org.jothika.costoperator.reconciler.enums.RuleStatus;
 import org.jothika.costoperator.reconciler.enums.ThresholdCondition;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
@@ -42,7 +43,8 @@ class RuleHandlerTest {
         MockitoAnnotations.openMocks(this);
         EventGenerator eventGenerator = new EventGenerator(kubernetesClient);
         MetricsService metricsService = new MetricsService(kubernetesClient);
-        ruleHandler = new RuleHandler(eventGenerator, metricsService, emailService);
+        RuleValidator ruleValidator = new RuleValidator(kubernetesClient);
+        ruleHandler = new RuleHandler(eventGenerator, metricsService, emailService, ruleValidator);
         testMockUtils = new TestMockUtils(mockServer);
     }
 
@@ -130,8 +132,10 @@ class RuleHandlerTest {
     }
 
     @ParameterizedTest
-    @EnumSource(MetricType.class)
-    void testReconcileRuleCompletedState(MetricType metricType) {
+    @EnumSource(
+            value = RuleStatus.class,
+            names = {"COMPLETED", "FAILED"})
+    void testReconcileRuleCompletedState(RuleStatus ruleStatus) {
         String namespace = "test-namespace";
         String podName = "test-pod";
         // Create a mock CostOptimizationRule object
@@ -140,12 +144,13 @@ class RuleHandlerTest {
                         "test-rule",
                         namespace,
                         podName,
-                        metricType,
+                        MetricType.CPU,
                         ThresholdCondition.LESSTHAN,
                         20);
+        testMockUtils.mockEventsApiToEmptyResponse(namespace);
 
         CostOptimizationRuleStatus status = new CostOptimizationRuleStatus();
-        status.setRuleStatus(RuleStatus.COMPLETED);
+        status.setRuleStatus(ruleStatus);
         rule.setStatus(status);
 
         // Call the reconcile method
@@ -264,5 +269,48 @@ class RuleHandlerTest {
                         message);
                 break;
         }
+    }
+
+    @Test
+    void testInvalidRuleSuccess() throws InterruptedException, JsonProcessingException {
+        String ruleName = "test-rule";
+        String namespace = "default";
+        String podName = "test-pod";
+        String cpuAllocated = "100m";
+        String memoryAllocated = "128Mi";
+
+        testMockUtils.mockPodAllocatedMetricsK8sApiEndpoints(
+                namespace, podName, cpuAllocated, memoryAllocated);
+        testMockUtils.mockEventsApiToEmptyResponse(namespace);
+
+        String nonExistPodName = "non-exist-pod";
+        CostOptimizationRule rule =
+                testMockUtils.getCostOptimizationRule(
+                        ruleName,
+                        namespace,
+                        nonExistPodName,
+                        MetricType.CPU,
+                        ThresholdCondition.GREATERTHAN,
+                        50);
+
+        CostOptimizationRule costOptimizationRule = ruleHandler.reconcileRule(rule);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Event event =
+                objectMapper.readValue(
+                        mockServer.getLastRequest().getBody().readUtf8(), Event.class);
+
+        assertEquals(RuleStatus.FAILED, costOptimizationRule.getStatus().getRuleStatus());
+        assertEquals(rule.getMetadata().getName(), event.getInvolvedObject().getName());
+        assertEquals(rule.getMetadata().getNamespace(), event.getInvolvedObject().getNamespace());
+        assertEquals(rule.getMetadata().getUid(), event.getInvolvedObject().getUid());
+        assertEquals(rule.getApiVersion(), event.getInvolvedObject().getApiVersion());
+        assertEquals(rule.getKind(), event.getInvolvedObject().getKind());
+        assertEquals(EventType.WARNING.getType(), event.getType());
+        assertEquals(
+                "Pod "
+                        + nonExistPodName
+                        + " in namespace default does not exist. Skipping reconciliation.",
+                event.getMessage());
     }
 }

@@ -60,6 +60,7 @@ spec:
                 - "ACTIVE"
                 - "COMPLETED"
                 - "CREATED"
+                - "FAILED"
                 type: "string"
             type: "object"
         type: "object"
