@@ -21,12 +21,12 @@ Before proceeding, ensure the following are installed:
 - **Java (17 or 21)**
 - **Gradle**
 - **Docker**
-- **Kubernetes Cluster** (e.g. Minikube or any cloud provider)
+- **Kubernetes Cluster** 
 - **kubectl CLI**
 - **Helm**
 - **CRD Generator** (`crd-gen` from Fabric8)
 
-Detailed installation instructions are available in the [Developer Guide](#developer-setup).
+Detailed installation instructions are available in the [Developer Guide](Developer-Guide.md).
 
 ---
 
