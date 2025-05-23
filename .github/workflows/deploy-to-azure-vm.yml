@@ -1,0 +1,71 @@
+name: Deploy with Helm by Environment to Azure VM
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment to deploy to
+        required: true
+        options:
+          - Testing
+          - Staging
+          - Production
+      imageTag:
+        description: Docker image tag (e.g. 1.2.3-SNAPSHOT)
+        required: true
+
+jobs:
+  deploy-to-azure-vm:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AZURE_VM_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.AZURE_VM_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Wait for SSH to become available
+        run: |
+          for i in {1..20}; do
+            if ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} "echo VM is up"; then
+              echo "SSH available"
+              break
+            fi
+            echo "Waiting for SSH..."
+            sleep 15
+          done
+
+      - name: Clean up Kubernetes environment
+        run: |
+          ssh ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} << 'EOF'
+            set -e
+            helm uninstall ${{ secrets.HELM_RELEASE_NAME }} || true
+          EOF
+
+      - name: Deploy Helm chart
+        run: |
+          ssh ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} << EOF
+            set -e
+            cd charts/cost-optimization-operator
+            helm upgrade --install ${{ secrets.HELM_RELEASE_NAME }} . \
+              --set image.tag=${{ github.event.inputs.imageTag }} \
+              --wait --timeout 300s
+          EOF
+
+      - name: Check Helm deployment status
+        run: |
+          ssh ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} << 'EOF'
+            status=$(helm status ${{ secrets.HELM_RELEASE_NAME }} -o json | jq -r .info.status)
+            echo "Helm status: $status"
+            if [ "$status" != "deployed" ]; then
+              echo "Helm deployment failed."
+              exit 1
+            fi
+          EOF
