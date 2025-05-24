@@ -1,0 +1,34 @@
+name: Deploy to Azure Testing Environment
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write  # Required for gh CLI to trigger workflows
+  actions: write   # Recommended if triggering other workflows
+
+jobs:
+  trigger-testing-azure-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Extract version from build.gradle
+        id: get_version
+        run: |
+          VERSION=$(grep '^version\s*=' app/build.gradle | sed 's/version\s*=\s*["'\'']\([^"'\'']*\)["'\'']/\1/')
+          echo "Detected version: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Trigger Testing Deployment
+        run: |
+          gh workflow run deploy-to-azure-vm.yml \
+            --ref "main" \
+            -f environment=Testing \
+            -f imageTag=${{ steps.get_version.outputs.image_tag }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
