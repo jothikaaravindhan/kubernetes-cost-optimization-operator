@@ -128,3 +128,6 @@ mail:
   port: ""
   username: ""
   password: ""
+
+spring:
+  activeProfiles: "default"

@@ -66,8 +66,15 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} << 'EOF'
             kubectl apply -f costoptimizationrules.org.jothika.costoperator-v1.yml
             cd charts/cost-optimization-operator
+            # If the environment is Production set spring.activeProfiles to prod in helm upgrade command
+            if [ "${{ github.event.inputs.environment }}" == "Production" ]; then
+              spring_active_profile="prod"
+            else
+              spring_active_profile="default"
+            fi
             helm upgrade --debug --install ${{ secrets.HELM_RELEASE_NAME }} . \
               --set image.tag=${{ github.event.inputs.imageTag }} \
+              --set spring.activeProfiles=${spring_active_profile} \
               --wait --timeout 300s
           EOF
 
