@@ -1,11 +1,11 @@
 apiVersion: org.jothika.costoperator/v1
 kind: CostOptimizationRule
 metadata:
-  name: nginx-cpu
+  name: nginx-cpu-less-than-point-one
   namespace: default
 spec:
   notificationEmail: apitest4@gmail.com
   podName: nginx-release-54bb959bd7-p7c69
   resourceType: CPU
-  thresholdCondition: GREATERTHAN
+  thresholdCondition: LESSTHAN
   threshold: 0.1
