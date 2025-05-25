@@ -46,8 +46,31 @@ class RuleValidatorTest {
                         MetricType.CPU,
                         ThresholdCondition.GREATERTHAN,
                         50);
-
+        rule.getSpec().setNotificationEmail("check@mail.com");
         assertTrue(ruleValidator.isValidRule(rule));
+    }
+
+    @Test
+    void isValidRuleFailWithEmail() {
+        String ruleName = "test-rule";
+        String namespace = "default";
+        String podName = "test-pod";
+        String cpuAllocated = "100m";
+        String memoryAllocated = "128Mi";
+
+        testMockUtils.mockPodAllocatedMetricsK8sApiEndpoints(
+                namespace, podName, cpuAllocated, memoryAllocated);
+
+        CostOptimizationRule rule =
+                testMockUtils.getCostOptimizationRule(
+                        ruleName,
+                        namespace,
+                        podName,
+                        MetricType.CPU,
+                        ThresholdCondition.GREATERTHAN,
+                        50);
+        rule.getSpec().setNotificationEmail("checkmail.com");
+        assertFalse(ruleValidator.isValidRule(rule));
     }
 
     @Test
@@ -69,7 +92,50 @@ class RuleValidatorTest {
                         MetricType.CPU,
                         ThresholdCondition.GREATERTHAN,
                         50);
-
+        rule.getSpec().setNotificationEmail("check@mail.com");
         assertFalse(ruleValidator.isValidRule(rule));
+    }
+
+    @Test
+    void isValidEmail() {
+        String ruleName = "test-rule";
+        String namespace = "default";
+        String podName = "test-pod";
+
+        CostOptimizationRule rule =
+                testMockUtils.getCostOptimizationRule(
+                        ruleName,
+                        namespace,
+                        podName,
+                        MetricType.CPU,
+                        ThresholdCondition.GREATERTHAN,
+                        50);
+
+        rule.getSpec().setNotificationEmail("check@mail.com");
+        assertTrue(ruleValidator.isValidEmail(rule));
+    }
+
+    @Test
+    void isValidEmailFailure() {
+        String ruleName = "test-rule";
+        String namespace = "default";
+        String podName = "test-pod";
+
+        CostOptimizationRule rule =
+                testMockUtils.getCostOptimizationRule(
+                        ruleName,
+                        namespace,
+                        podName,
+                        MetricType.CPU,
+                        ThresholdCondition.GREATERTHAN,
+                        50);
+        rule.getSpec().setNotificationEmail("invalid-email");
+        assertFalse(ruleValidator.isValidEmail(rule));
+
+        rule.getSpec().setNotificationEmail("");
+        assertFalse(ruleValidator.isValidEmail(rule));
+
+        rule.getSpec().setNotificationEmail(null);
+        assertFalse(ruleValidator.isValidEmail(rule));
     }
 }

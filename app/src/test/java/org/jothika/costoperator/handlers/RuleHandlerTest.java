@@ -64,6 +64,7 @@ class RuleHandlerTest {
                         metricType,
                         ThresholdCondition.LESSTHAN,
                         80);
+        rule.getSpec().setNotificationEmail("check@mail.com");
         testMockUtils.mockPodAllocatedMetricsK8sApiEndpoints(namespace, podName, "100m", "128Mi");
         testMockUtils.mockPodUsageMetricsK8sApiEndpoints(namespace, podName, "50m", "64Mi");
         testMockUtils.mockEventsApiToEmptyResponse(namespace);
@@ -105,6 +106,7 @@ class RuleHandlerTest {
                         metricType,
                         ThresholdCondition.LESSTHAN,
                         20);
+        rule.getSpec().setNotificationEmail("check@mail.com");
         testMockUtils.mockPodAllocatedMetricsK8sApiEndpoints(namespace, podName, "100m", "128Mi");
         testMockUtils.mockPodUsageMetricsK8sApiEndpoints(namespace, podName, "50m", "64Mi");
         testMockUtils.mockEventsApiToEmptyResponse(namespace);
