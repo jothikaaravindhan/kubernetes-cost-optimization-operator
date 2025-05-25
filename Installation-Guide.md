@@ -35,9 +35,22 @@ Create metrics server using the following command. The modified yaml is availabl
 
 >kubectl apply -f scripts/k8s/metrics-server.yaml
 
-Once installaed verify the metrics server installation as show below,
+Once installed verify the metrics server installation as show below,
 
 >kubectl top node
+
+
+### Apache Benchmark (ab)
+
+Apache Benchmark is a tool to test the performance of the web server. This is used to generate load on the NGINX web server to demonstrate the operator's functionality.
+
+Install Apache Benchmark using the following command. This is installed by default in the Mac environment. 
+For other environments, you can install it using the package manager of your choice.
+> apt-get install apache2-utils
+
+Sample command to run the Apache Benchmark tool to generate load on the NGINX web server.
+> ab -n 1000 -c 10 http://localhost:80/
+This command will send 1000 requests to the NGINX web server with a concurrency of 10 requests at a time.
 
 
 
