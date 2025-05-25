@@ -61,7 +61,7 @@ helm install cost-optimization-operator charts/cost-optimization-operator
 ```
 ### 6. Deploy Custom Resource (CR)
 ```bash
-kubectl apply -f app/crds/my-first-cr.yaml -n cost-optimization
+kubectl apply -f app/crds/nginx-cpu-greater-than-point-one-cr.yaml -n cost-optimization
 ```
 Make sure to update the namespace, threshold, and resource type inside the CR YAML.
 

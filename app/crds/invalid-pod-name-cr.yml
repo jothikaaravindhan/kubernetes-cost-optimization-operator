@@ -1,0 +1,13 @@
+apiVersion: org.jothika.costoperator/v1
+kind: CostOptimizationRule
+metadata:
+  name: invalid-pod-name-cr
+  namespace: default
+spec:
+  notificationEmail: apitest4@gmail.com
+  podName: nginxasd
+  resourceType: memory
+  thresholdCondition: GREATERTHAN
+  threshold: 0.1
+
+
