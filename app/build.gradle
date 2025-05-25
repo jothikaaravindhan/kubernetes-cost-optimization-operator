@@ -12,8 +12,8 @@ plugins {
     id("jacoco")
     id("com.google.cloud.tools.jib") version "3.4.5"
     id("com.diffplug.spotless") version "7.0.3"
-    id("org.sonarqube") version "6.1.0.5360"
-    id("org.springframework.boot") version "3.4.5"
+    id("org.sonarqube") version "6.2.0.5505"
+    id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -22,12 +22,12 @@ version = "0.2.0-SNAPSHOT"
 
 ext {
     javaVersion = JavaVersion.VERSION_21
-    josdkVersion = "5.0.4"
+    josdkVersion = "5.1.0"
     slf4jVersion = "1.7.36"
     log4jVersion = "2.20.0"
     junitVersion = "5.9.2"
-    fabric8Version = "7.1.0"
-    mockitoVersion = "5.17.0"
+    fabric8Version = "7.3.1"
+    mockitoVersion = "5.18.0"
     mailApiVersion = "2.1.3"
 }
 
