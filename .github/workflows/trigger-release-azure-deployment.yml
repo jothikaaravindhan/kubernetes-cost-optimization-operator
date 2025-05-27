@@ -23,7 +23,7 @@ jobs:
           CLEAN_VERSION=$(echo "$VERSION" | sed 's/-SNAPSHOT//')
           echo "Full version: $VERSION"
           echo "Release version: $CLEAN_VERSION"
-          echo "image_tag=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+          echo "image_tag=v$CLEAN_VERSION" >> $GITHUB_OUTPUT
 
       - name: Trigger Testing Deployment
         run: |

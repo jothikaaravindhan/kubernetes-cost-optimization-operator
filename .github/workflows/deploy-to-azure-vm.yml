@@ -67,7 +67,7 @@ jobs:
             kubectl apply -f costoptimizationrules.org.jothika.costoperator-v1.yml
             cd charts/cost-optimization-operator
             # If the environment is Production set spring.activeProfiles to prod in helm upgrade command
-            if [ "${{ github.event.inputs.environment }}" == "Production" ]; then
+            if [ "${{ github.event.inputs.environment }}" = "Production" ]; then
               spring_active_profile="prod"
             else
               spring_active_profile="default"
