@@ -46,7 +46,7 @@ spec:
               protocol: TCP
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: {{ .Values.springProfilesActive | default "default" }}
+              value: {{ .Values.spring.activeProfiles | default "default" }}
             - name: SPRING_MAIL_HOST
               valueFrom:
                 secretKeyRef:
