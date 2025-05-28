@@ -48,7 +48,7 @@ gradle clean build
 ```bash
 crd-gen app/build/libs/app-0.2.0-SNAPSHOT-plain.jar -o app/crds
 ```
-### 4. Deploy the Operator
+### 4. Deploy the CRD
 
 ```bash
 kubectl apply -f app/crds/costoptimizationrules.org.jothika.costoperator-v1.yml
@@ -69,7 +69,7 @@ Make sure to update the namespace, threshold, and resource type inside the CR YA
 Use kubectl or Lens to watch the pod:
 ```bash
 kubectl get pods -n cost-optimization
-kubectl logs -f <nginx-release-54bb959bd7-p7c69> -n cost-optimization
+kubectl logs -f <POD_TO_MONITOR> -n cost-optimization
 ```
 
 ### 8. Check Email Notifications
